@@ -1,5 +1,6 @@
 /* src/App.js */
 import React, { useEffect, useState } from 'react'
+import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react';
 import { Amplify, API, graphqlOperation } from 'aws-amplify'
 import { createBdBTest } from './graphql/mutations'
 import { listBdBTests } from './graphql/queries'
@@ -9,7 +10,7 @@ Amplify.configure(awsExports);
 
 const initialState = { name: '', description: '' }
 
-const App = () => {
+const App = ({ signOut, user }) => {
   const [formState, setFormState] = useState(initialState)
   const [bdbTests, setBdBTests] = useState([])
 
@@ -35,7 +36,7 @@ const App = () => {
       const bdbTestForm = { ...formState }
       setBdBTests([...bdbTests, bdbTestForm])
       setFormState(initialState)
-      await API.graphql(graphqlOperation(createBdBTest, {input: bdbTestForm}))
+      await API.graphql(graphqlOperation(createBdBTest, { input: bdbTestForm }))
     } catch (err) {
       console.log('error creating BdBTests:', err)
     }
@@ -43,6 +44,8 @@ const App = () => {
 
   return (
     <div style={styles.container}>
+      <Heading level={1}>Hello {user.username}</Heading>
+      <Button onClick={signOut}>Sign out</Button>
       <h2>Amplify BdBTests</h2>
       <input
         onChange={event => setInput('name', event.target.value)}
@@ -71,11 +74,12 @@ const App = () => {
 
 const styles = {
   container: { width: 400, margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 20 },
-  bdbTest: {  marginBottom: 15 },
+  bdbTest: { marginBottom: 15 },
   input: { border: 'none', backgroundColor: '#ddd', marginBottom: 10, padding: 8, fontSize: 18 },
   bdbTestName: { fontSize: 20, fontWeight: 'bold' },
   bdbTestDescription: { marginBottom: 0 },
   button: { backgroundColor: 'black', color: 'white', outline: 'none', fontSize: 18, padding: '12px 0px' }
 }
 
-export default App
+
+export default withAuthenticator(App);
