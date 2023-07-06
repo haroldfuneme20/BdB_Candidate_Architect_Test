@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { withAuthenticator, Button, Heading, Text, TextField, View, Image } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify, API, graphqlOperation } from 'aws-amplify'
-import { createBdBTest } from './graphql/mutations'
+import { createBdBTest, deleteBdBTest } from './graphql/mutations'
 import { listBdBTests } from './graphql/queries'
 
 import awsExports from "./aws-exports";
@@ -43,7 +43,19 @@ const App = ({ signOut, user }) => {
     }
   }
 
+  async function deleteUser(id) {
+    try {
+      await API.graphql(graphqlOperation(deleteBdBTest, { input: { id } }))
+      bdBTests()
+    } catch (err) {
+      console.log('error deleting BdBTest:', err)
+    }
+  }
+
+ 
+
   return (
+  
 
     <View >
       <Image
@@ -56,7 +68,7 @@ const App = ({ signOut, user }) => {
         style={{ marginBottom: "20px" }}
         onClick={() => alert('📸 Say cheese!')}
       />
-      <View style={styles.container}>
+      <View style={styles.container} >
 
         <Heading level={1}>Hello {user.username}</Heading>
         <Button style={styles.button_signout} onClick={signOut}>Sign out</Button>
@@ -83,6 +95,7 @@ const App = ({ signOut, user }) => {
             <View key={bdbTest.id ? bdbTest.id : index} style={styles.bdbTest}>
               <Text style={styles.bdbTestName}>{bdbTest.name}</Text>
               <Text style={styles.bdbTestDescription}>{bdbTest.description}</Text>
+              <Button onClick={() => deleteUser(bdbTest.id)}>Delete</Button> {}
             </View>
           ))
         }
