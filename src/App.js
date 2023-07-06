@@ -1,5 +1,7 @@
 /* src/App.js */
 import React, { useEffect, useState } from 'react'
+import { withAuthenticator, Button, Heading, Text, TextField, View, Image } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import { Amplify, API, graphqlOperation } from 'aws-amplify'
 import { createBdBTest } from './graphql/mutations'
 import { listBdBTests } from './graphql/queries'
@@ -9,7 +11,7 @@ Amplify.configure(awsExports);
 
 const initialState = { name: '', description: '' }
 
-const App = () => {
+const App = ({ signOut, user }) => {
   const [formState, setFormState] = useState(initialState)
   const [bdbTests, setBdBTests] = useState([])
 
@@ -35,47 +37,69 @@ const App = () => {
       const bdbTestForm = { ...formState }
       setBdBTests([...bdbTests, bdbTestForm])
       setFormState(initialState)
-      await API.graphql(graphqlOperation(createBdBTest, {input: bdbTestForm}))
+      await API.graphql(graphqlOperation(createBdBTest, { input: bdbTestForm }))
     } catch (err) {
       console.log('error creating BdBTests:', err)
     }
   }
 
   return (
-    <div style={styles.container}>
-      <h2>Amplify BdBTests</h2>
-      <input
-        onChange={event => setInput('name', event.target.value)}
-        style={styles.input}
-        value={formState.name}
-        placeholder="Name"
+
+    <View >
+      <Image
+        alt="Amplify logo"
+        src="/Open-source-Amplify-framework.png"
+        objectFit="initial"
+        backgroundColor="initial"
+        height="400px"
+        width="100%"
+        style={{ marginBottom: "20px" }}
+        onClick={() => alert('📸 Say cheese!')}
       />
-      <input
-        onChange={event => setInput('description', event.target.value)}
-        style={styles.input}
-        value={formState.description}
-        placeholder="Description"
-      />
-      <button style={styles.button} onClick={addBdBTests}>Create BdBTests</button>
-      {
-        bdbTests.map((bdbTest, index) => (
-          <div key={bdbTest.id ? bdbTest.id : index} style={styles.bdbTest}>
-            <p style={styles.bdbTestName}>{bdbTest.name}</p>
-            <p style={styles.bdbTestDescription}>{bdbTest.description}</p>
-          </div>
-        ))
-      }
-    </div>
+      <View style={styles.container}>
+
+        <Heading level={1}>Hello {user.username}</Heading>
+        <Button style={styles.button_signout} onClick={signOut}>Sign out</Button>
+        <Heading level={2}>Mutations Results</Heading>
+        <Button style={styles.button_add_data} onClick={addBdBTests}>ADD DATA</Button>
+        <TextField
+          onChange={event => setInput('name', event.target.value)}
+          style={styles.input}
+          value={formState.name}
+          placeholder="Name"
+        />
+        <TextField
+          onChange={event => setInput('description', event.target.value)}
+          style={styles.input}
+          value={formState.description}
+          placeholder="Description"
+        />
+
+
+        <Heading level={2}>Query Results</Heading>
+
+        {
+          bdbTests.map((bdbTest, index) => (
+            <View key={bdbTest.id ? bdbTest.id : index} style={styles.bdbTest}>
+              <Text style={styles.bdbTestName}>{bdbTest.name}</Text>
+              <Text style={styles.bdbTestDescription}>{bdbTest.description}</Text>
+            </View>
+          ))
+        }
+      </View>
+    </View>
   )
 }
 
 const styles = {
   container: { width: 400, margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 20 },
-  bdbTest: {  marginBottom: 15 },
+  bdbTest: { marginBottom: 15 },
   input: { border: 'none', backgroundColor: '#ddd', marginBottom: 10, padding: 8, fontSize: 18 },
   bdbTestName: { fontSize: 20, fontWeight: 'bold' },
   bdbTestDescription: { marginBottom: 0 },
-  button: { backgroundColor: 'black', color: 'white', outline: 'none', fontSize: 18, padding: '12px 0px' }
+  button_signout: { backgroundColor: 'red', color: 'white', width: 'auto', fontSize: 18, padding: '12px 0px' },
+  button_add_data: { backgroundColor: 'orange', color: 'white', width: 'auto', outline: 'none', fontSize: 18, padding: '12px 0px' }
 }
 
-export default App
+
+export default withAuthenticator(App);
