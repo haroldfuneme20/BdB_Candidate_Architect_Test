@@ -10,6 +10,11 @@
       "StackName": "amplify-bdbcandidatearchitec-dev-110837",
       "StackId": "arn:aws:cloudformation:us-east-1:342176598900:stack/amplify-bdbcandidatearchitec-dev-110837/5ed61ce0-1c17-11ee-a0ff-0e04277e5dad",
       "AmplifyAppId": "d3jdqc6ku6wode"
+    },
+    "categories": {
+      "api": {
+        "bdbcandidatearchitec": {}
+      }
     }
   }
 }
