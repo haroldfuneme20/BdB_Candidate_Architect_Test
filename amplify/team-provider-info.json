@@ -17,6 +17,12 @@
       },
       "auth": {
         "bdbcandidatearchitecf7984bd6": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d3jdqc6ku6wode",
+          "type": "manual"
+        }
       }
     }
   }

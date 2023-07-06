@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.button-orange {
+  background-color: orange;
+  color: white;
+  /* Otros estilos adicionales */
+}
+
+.button-auto-width {
+  width: auto !important;
+}
+@import "@aws-amplify/ui-react/styles.css";
